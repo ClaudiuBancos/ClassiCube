@@ -330,28 +330,32 @@ static void Physics_PlaceLava(int index, BlockID block) {
 }
 
 static void Physics_PropagateLava(int posIndex, int x, int y, int z) {
-	BlockID block = World.Blocks[posIndex];
+	/* Do not propagate lava - CDB */
 
-	if (block >= BLOCK_WATER && block <= BLOCK_STILL_LAVA) {
+	/*BlockID block = World.Blocks[posIndex];
+
+	if (block >= BLOCK_WATER && block <= BLOCK_STILL_LAVA) {*/
 		/* Lava spreading into water turns the water solid */
-		if (block == BLOCK_WATER || block == BLOCK_STILL_WATER) {
+		/*if (block == BLOCK_WATER || block == BLOCK_STILL_WATER) {
 			Game_UpdateBlock(x, y, z, BLOCK_STONE);
 		}
 	} else if (Blocks.Draw[block] == DRAW_GAS) {
 		TickQueue_Enqueue(&lavaQ, PHYSICS_LAVA_DELAY | posIndex);
 		Game_UpdateBlock(x, y, z, BLOCK_LAVA);
-	}
+	}*/
 }
 
 static void Physics_ActivateLava(int index, BlockID block) {
 	int x, y, z;
 	World_Unpack(index, x, y, z);
 
-	if (x > 0)          Physics_PropagateLava(index - 1, x - 1, y, z);
+	/* Do not propagate lava - CDB */
+
+	/*if (x > 0)          Physics_PropagateLava(index - 1, x - 1, y, z);
 	if (x < World.MaxX) Physics_PropagateLava(index + 1, x + 1, y, z);
 	if (z > 0)          Physics_PropagateLava(index - World.Width, x, y, z - 1);
 	if (z < World.MaxZ) Physics_PropagateLava(index + World.Width, x, y, z + 1);
-	if (y > 0)          Physics_PropagateLava(index - World.OneY, x, y - 1, z);
+	if (y > 0)          Physics_PropagateLava(index - World.OneY, x, y - 1, z);*/
 }
 
 static void Physics_TickLava(void) {
@@ -361,7 +365,8 @@ static void Physics_TickLava(void) {
 		if (Physics_CheckItem(&lavaQ, &index)) {
 			BlockID block = World.Blocks[index];
 			if (!(block == BLOCK_LAVA || block == BLOCK_STILL_LAVA)) continue;
-			Physics_ActivateLava(index, block);
+			/* Do not propagate lava - CDB */
+			/*Physics_ActivateLava(index, block);*/
 		}
 	}
 }
@@ -372,17 +377,19 @@ static void Physics_PlaceWater(int index, BlockID block) {
 }
 
 static void Physics_PropagateWater(int posIndex, int x, int y, int z) {
-	BlockID block = World.Blocks[posIndex];
+	/* Do not propagate water - CDB */
+
+	/*BlockID block = World.Blocks[posIndex];
 	int xx, yy, zz;
 
-	if (block >= BLOCK_WATER && block <= BLOCK_STILL_LAVA) {
+	if (block >= BLOCK_WATER && block <= BLOCK_STILL_LAVA) {*/
 		/* Water spreading into lava turns the lava solid */
-		if (block == BLOCK_LAVA || block == BLOCK_STILL_LAVA) {
+		/*if (block == BLOCK_LAVA || block == BLOCK_STILL_LAVA) {
 			Game_UpdateBlock(x, y, z, BLOCK_STONE);
 		}
-	} else if (Blocks.Draw[block] == DRAW_GAS) {
+	} else if (Blocks.Draw[block] == DRAW_GAS) {*/
 		/* Sponge check */		
-		for (yy = (y < 2 ? 0 : y - 2); yy <= (y > physics_maxWaterY ? World.MaxY : y + 2); yy++) {
+		/*for (yy = (y < 2 ? 0 : y - 2); yy <= (y > physics_maxWaterY ? World.MaxY : y + 2); yy++) {
 			for (zz = (z < 2 ? 0 : z - 2); zz <= (z > physics_maxWaterZ ? World.MaxZ : z + 2); zz++) {
 				for (xx = (x < 2 ? 0 : x - 2); xx <= (x > physics_maxWaterX ? World.MaxX : x + 2); xx++) {
 					block = World_GetBlock(xx, yy, zz);
@@ -393,18 +400,19 @@ static void Physics_PropagateWater(int posIndex, int x, int y, int z) {
 
 		TickQueue_Enqueue(&waterQ, PHYSICS_WATER_DELAY | posIndex);
 		Game_UpdateBlock(x, y, z, BLOCK_WATER);
-	}
+	}*/
 }
 
 static void Physics_ActivateWater(int index, BlockID block) {
 	int x, y, z;
 	World_Unpack(index, x, y, z);
 
-	if (x > 0)          Physics_PropagateWater(index - 1,           x - 1, y,     z);
+	/* Do not propagate water - CDB */
+	/*if (x > 0)          Physics_PropagateWater(index - 1,           x - 1, y,     z);
 	if (x < World.MaxX) Physics_PropagateWater(index + 1,           x + 1, y,     z);
 	if (z > 0)          Physics_PropagateWater(index - World.Width, x,     y,     z - 1);
 	if (z < World.MaxZ) Physics_PropagateWater(index + World.Width, x,     y,     z + 1);
-	if (y > 0)          Physics_PropagateWater(index - World.OneY,  x,     y - 1, z);
+	if (y > 0)          Physics_PropagateWater(index - World.OneY,  x,     y - 1, z);*/
 }
 
 static void Physics_TickWater(void) {
@@ -414,7 +422,8 @@ static void Physics_TickWater(void) {
 		if (Physics_CheckItem(&waterQ, &index)) {
 			BlockID block = World.Blocks[index];
 			if (!(block == BLOCK_WATER || block == BLOCK_STILL_WATER)) continue;
-			Physics_ActivateWater(index, block);
+			/* Do not propagate water - CDB */
+			/*Physics_ActivateWater(index, block);*/
 		}
 	}
 }
@@ -540,8 +549,9 @@ void Physics_Init(void) {
 	Physics.OnRandomTick[BLOCK_RED_SHROOM]   = Physics_HandleMushroom;
 	Physics.OnRandomTick[BLOCK_BROWN_SHROOM] = Physics_HandleMushroom;
 
-	Physics.OnPlace[BLOCK_LAVA]    = Physics_PlaceLava;
-	Physics.OnPlace[BLOCK_WATER]   = Physics_PlaceWater;
+	/* Water/lava flooding disabled: don't enqueue them for flood ticking when placed - CDB */
+	/*Physics.OnPlace[BLOCK_LAVA]    = Physics_PlaceLava;
+	Physics.OnPlace[BLOCK_WATER]   = Physics_PlaceWater;*/
 	Physics.OnPlace[BLOCK_SPONGE]  = Physics_PlaceSponge;
 	Physics.OnDelete[BLOCK_SPONGE] = Physics_DeleteSponge;
 
@@ -550,10 +560,10 @@ void Physics_Init(void) {
 	Physics.OnActivate[BLOCK_LAVA]        = Physics.OnPlace[BLOCK_LAVA];
 	Physics.OnActivate[BLOCK_STILL_LAVA]  = Physics.OnPlace[BLOCK_LAVA];
 
-	Physics.OnRandomTick[BLOCK_WATER]       = Physics_ActivateWater;
+	/*Physics.OnRandomTick[BLOCK_WATER]       = Physics_ActivateWater;
 	Physics.OnRandomTick[BLOCK_STILL_WATER] = Physics_ActivateWater;
 	Physics.OnRandomTick[BLOCK_LAVA]        = Physics_ActivateLava;
-	Physics.OnRandomTick[BLOCK_STILL_LAVA]  = Physics_ActivateLava;
+	Physics.OnRandomTick[BLOCK_STILL_LAVA]  = Physics_ActivateLava;*/
 
 	Physics.OnPlace[BLOCK_SLAB]        = Physics_HandleSlab;
 	if (Game_ClassicMode) return;
